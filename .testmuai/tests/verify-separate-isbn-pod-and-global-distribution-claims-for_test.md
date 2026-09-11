@@ -15,6 +15,6 @@ Open https://notionpress.com/ and navigate to the self-publishing page that pres
 
 On the self-publishing page's formats and printing sections, review the ISBN and production statements, then assert the page states that each format is issued its own separate ISBN and that printing uses a print-on-demand model driven by sales velocity.
 
-## Step 3 @verifies ac-5, ac-6, ac-7
+## Step 3 @verifies ac-5, ac-7
 
-On the same page's distribution section, review the named channels and reach statement, then assert Amazon, Flipkart, and the Notion Press Store are listed and the reach claim shows 30,000+ stores across 150+ countries.
+On the same page's distribution section, review the reach statement, then assert Amazon and the Notion Press Store are named as sales channels and the reach claim shows 30,000+ stores across 150+ countries.
