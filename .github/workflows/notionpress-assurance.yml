@@ -53,11 +53,17 @@ jobs:
       - name: List committed tests
         run: kane-cli testmd list
 
+      # testrun emits its own NDJSON to stdout automatically once stdout isn't
+      # a TTY (no --agent flag needed here) — tee it so the summary step below
+      # can read testrun_summary/testrun_done without re-parsing raw logs.
       - name: Run Notion Press assurance suite
+        id: testrun
+        continue-on-error: true
         run: |
           kane-cli testrun run \
             --headless \
-            --on-failure fail-fast
+            --on-failure fail-fast \
+            | tee testrun-output.ndjson
 
       - name: Show evidence files
         if: always()
@@ -66,6 +72,7 @@ jobs:
           find .testmuai/evidence -maxdepth 2 -type f -print 2>/dev/null || true
 
       - name: Validate evidence packs
+        id: validate
         if: always()
         shell: bash
         run: |
@@ -81,13 +88,59 @@ jobs:
 
           for pack in "${packs[@]}"; do
             echo "Validating $pack"
-            kane-cli evidence validate "$pack" --json || validation_failed=1
+            kane-cli evidence validate "$pack" --json | tee -a evidence-validate.ndjson || validation_failed=1
           done
 
           if [ "$validation_failed" -ne 0 ]; then
             echo "One or more evidence packs failed validation."
             exit 1
           fi
+
+      # The rest of this workflow only writes to the raw log and an artifact
+      # you have to download and unzip to see — nothing shows up on the run's
+      # own Summary page. This surfaces the pass/fail totals, evidence pack
+      # id, and validation result right there instead.
+      - name: Write GitHub Step Summary
+        if: always()
+        run: |
+          {
+            echo "## Notion Press — Kane CLI Assurance"
+            echo ""
+            SUMMARY_LINE=$(grep '"type":"testrun_summary"' testrun-output.ndjson 2>/dev/null | tail -1)
+            if [ -n "$SUMMARY_LINE" ]; then
+              STATUS=$(echo "$SUMMARY_LINE" | jq -r '.execution.status')
+              EVIDENCE_ID=$(echo "$SUMMARY_LINE" | jq -r '.execution.evidence_id')
+              PASSED=$(echo "$SUMMARY_LINE" | jq -r '.totals.passed')
+              FAILED=$(echo "$SUMMARY_LINE" | jq -r '.totals.failed')
+              BROKEN=$(echo "$SUMMARY_LINE" | jq -r '.totals.broken')
+              SKIPPED=$(echo "$SUMMARY_LINE" | jq -r '.totals.skipped')
+              TOTAL=$(echo "$SUMMARY_LINE" | jq -r '.totals.tests')
+              DURATION=$(echo "$SUMMARY_LINE" | jq -r '.duration_s')
+              ICON="✅"; [ "$STATUS" != "passed" ] && ICON="❌"
+              echo "| | |"
+              echo "|---|---|"
+              echo "| $ICON **Result** | $STATUS |"
+              echo "| **Tests** | $PASSED passed, $FAILED failed, $BROKEN broken, $SKIPPED skipped (of $TOTAL) |"
+              echo "| **Duration** | ${DURATION}s |"
+              echo "| **Evidence pack** | \`$EVIDENCE_ID.evidence\` — download it from this run's **kane-cli-evidence** artifact, or open it locally with \`kane-cli evidence serve\` |"
+            else
+              echo "_No testrun_summary event found — the suite may have failed before producing one. See the \"Run Notion Press assurance suite\" step log._"
+            fi
+            echo ""
+            echo "### Evidence pack validation"
+            echo ""
+            if [ -f evidence-validate.ndjson ]; then
+              echo '```json'
+              cat evidence-validate.ndjson
+              echo '```'
+            else
+              echo "_No validation output captured._"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail build if the assurance suite failed
+        if: steps.testrun.outcome == 'failure'
+        run: exit 1
 
       - name: Upload Kane CLI evidence
         if: always()
@@ -98,5 +151,7 @@ jobs:
             .testmuai/evidence/
             .testmuai/tests/**/Result.md
             .testmuai/tests/**/output-*/
+            testrun-output.ndjson
+            evidence-validate.ndjson
           if-no-files-found: warn
           retention-days: 14
