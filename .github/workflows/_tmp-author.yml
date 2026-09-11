@@ -39,8 +39,7 @@ jobs:
         id: author
         run: |
           failed=0
-          for f in .testmuai/tests/verify-separate-isbn-pod-and-global-distribution-claims-for_test.md \
-                   .testmuai/tests/verify-supported-release-formats-and-publication-languages_test.md; do
+          for f in .testmuai/tests/verify-supported-release-formats-and-publication-languages_test.md; do
             kane-cli testmd run "$f" --agent --headless --author || failed=1
           done
           exit $failed

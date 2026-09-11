@@ -13,12 +13,24 @@ Open https://notionpress.com/ and navigate to the self-publishing page that desc
 
 ## Step 2
 
-Scroll through the publishing workflow and formats sections and wait for the release-format statements ("release simultaneously as paperback and eBook", and the list of supported formats) to be fully visible on screen before continuing.
+Scroll to the publishing workflow section until the "release simultaneously as paperback and eBook" statement is on screen, then wait 3 seconds for the section to finish rendering.
 
-## Step 3 @verifies ac-2, ac-3
+## Step 3 @verifies ac-2
 
-Now that the release-format statements are visible, assert the page offers simultaneous paperback and eBook release and lists Paperback, Hardbound, and eBook as supported formats.
+Assert the page states that a book can be released simultaneously as paperback and eBook.
 
-## Step 4 @verifies ac-4
+## Step 4
 
-In the same page's language support section, review the supported publication languages, then assert English, Hindi, Tamil, Bengali, Marathi, Malayalam, Gujarati, and Kannada are all listed.
+Scroll to the formats section until the list of supported formats is on screen, then wait 3 seconds for the section to finish rendering.
+
+## Step 5 @verifies ac-3
+
+Assert the page lists Paperback, Hardbound, and eBook as supported formats.
+
+## Step 6
+
+Scroll to the language support section until the list of supported languages is on screen, then wait 3 seconds for the section to finish rendering.
+
+## Step 7 @verifies ac-4
+
+Assert English, Hindi, Tamil, Bengali, Marathi, Malayalam, Gujarati, and Kannada are all listed as supported publication languages.
