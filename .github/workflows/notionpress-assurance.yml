@@ -7,6 +7,14 @@ on:
       - main
   workflow_dispatch:
 
+# Without this, a push and a manual dispatch landing close together race for
+# the same committed tests — kane-cli falls back to a per-test lock and one
+# run executes in readonly mode instead of failing loudly, which just hides
+# the contention rather than preventing it. Queue instead of overlapping.
+concurrency:
+  group: notionpress-assurance-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   notionpress-assurance:
     name: Run Notion Press assurance suite
