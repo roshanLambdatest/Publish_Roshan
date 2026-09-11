@@ -1,0 +1,18 @@
+{
+  "test_id": "079a0391-0050-4e81-b03b-86bbceab370f",
+  "project_id": "01J87QEHKVYWMP0W5E8K5CMXRA",
+  "folder_id": "01J87QEHMHFXWC40A758WRX3NR",
+  "org_id": "588659",
+  "session_name": "verify-supported-release-formats-and-publication-languages",
+  "commit_id": "4157603d-041d-4aad-b103-c8916500dec7",
+  "testcase_id": "01M28VN7S271G69S0SMPQWQP0G",
+  "executions": [
+    {
+      "execution_id": "c13931b3-7a0e-41e3-a3bd-6f1b8f4e9ac4",
+      "run_kind": "author",
+      "status": "failed",
+      "valid": true,
+      "at": "2026-09-11T18:33:21.426Z"
+    }
+  ]
+}
