@@ -1,0 +1,15 @@
+# Kane CLI local assurance store
+.context/
+
+# Kane CLI runtime evidence
+.testmuai/evidence/
+
+# Local Kane CLI session/config artifacts
+.testmuai/sessions/
+.testmuai/*.log
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
