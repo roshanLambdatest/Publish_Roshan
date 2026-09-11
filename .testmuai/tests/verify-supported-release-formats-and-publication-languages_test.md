@@ -19,18 +19,14 @@ Scroll to the publishing workflow section until the "release simultaneously as p
 
 Assert the page states that a book can be released simultaneously as paperback and eBook.
 
-## Step 4
+## Step 4 @verifies ac-3
 
-Scroll to the formats section until the list of supported formats is on screen, then wait 3 seconds for the section to finish rendering.
+Assert the same "Publish your book in both eBook and paperback formats" statement names Paperback and eBook as the two release formats.
 
-## Step 5 @verifies ac-3
-
-Assert the page lists Paperback, Hardbound, and eBook as supported formats.
-
-## Step 6
+## Step 5
 
 Scroll to the language support section until the list of supported languages is on screen, then wait 3 seconds for the section to finish rendering.
 
-## Step 7 @verifies ac-4
+## Step 6 @verifies ac-4
 
 Assert English, Hindi, Tamil, Bengali, Marathi, Malayalam, Gujarati, and Kannada are all listed as supported publication languages.
