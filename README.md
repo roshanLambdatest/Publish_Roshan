@@ -187,7 +187,11 @@ kane-cli evidence serve .testmuai/evidence/<execution-id>.evidence
 
 The evidence pack contains the test definitions, results, screenshots, console/network logs and failure information.
 
-Do not commit `.testmuai/evidence/`.
+`.testmuai/evidence/` itself is gitignored — kane-cli names each pack with a random execution id, so it's not something to commit as-is. CI copies the latest pack to `evidence/latest.evidence` (a fixed, non-ignored path, overwritten every run) and commits it, so the most recent run's full evidence is always in the repo without the history growing unbounded. Open it locally after pulling:
+
+```bash
+kane-cli evidence serve evidence/latest.evidence
+```
 
 ## Phase 4 — GitHub Actions
 
@@ -206,7 +210,9 @@ The workflow in `.github/workflows/notionpress-assurance.yml`:
 4. Logs into TestMu AI using GitHub Secrets.
 5. Runs the committed Notion Press tests in headless mode.
 6. Validates the generated evidence pack.
-7. Uploads evidence, `Result.md` files and test outputs as workflow artifacts.
+7. Commits the pack to `evidence/latest.evidence` (skipped on `pull_request` runs — see the workflow file's comment on why).
+8. Writes pass/fail totals and the evidence pack id to the run's Step Summary.
+9. Uploads evidence, `Result.md` files, test outputs, and the raw NDJSON logs as workflow artifacts.
 
 ## Recommended training demo
 
